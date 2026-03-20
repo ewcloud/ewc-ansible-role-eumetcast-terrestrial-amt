@@ -217,3 +217,37 @@
   ansible.builtin.service:
     name: tellicast-client
     state: started
+
+- name: Apply kernel networking parameters
+  ansible.posix.sysctl:
+    name: "{{ item.name }}"
+    value: "{{ item.value }}"
+    state: present
+    sysctl_set: true
+    reload: true
+  loop: "{{ sysctl_parameters }}"
+
+- name: Check existing NAT rule
+  ansible.builtin.command:
+    cmd: |
+      iptables --table nat
+      --check POSTROUTING
+      --destination {{ nat_destination_network }}
+      --jump SNAT
+      --to-source {{ ansible_facts["default_ipv4"]["address"] }}
+  register: nat_rule_check
+  changed_when: false
+  failed_when: false
+
+- name: Add NAT masquerade rule
+  ansible.builtin.command:
+    cmd: |
+      iptables --table nat
+      --append POSTROUTING
+      --destination {{ nat_destination_network }}
+      --jump SNAT
+      --to-source {{ ansible_facts["default_ipv4"]["address"] }}
+  register: nat_rule_add
+  when: nat_rule_check.rc != 0
+  changed_when: nat_rule_add.rc == 0
+  notify: Save iptables

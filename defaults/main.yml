@@ -8,3 +8,19 @@ services:
   - ter-1
   - ter-2
   - ter-3
+nat_destination_network: "193.17.9.3/28"
+sysctl_parameters:
+  - name: "net.core.rmem_default"
+    value: "21299200"
+  - name: "net.core.wmem_default"
+    value: "21299200"
+  - name: "net.core.rmem_max"
+    value: "21292200"
+  - name: "net.core.wmem_max"
+    value: "21292200"
+  - name: "net.core.netdev_max_backlog"
+    value: "10000"
+  - name: "net.ipv4.udp_rmem_min"
+    value: "21292200"
+  - name: "net.ipv4.udp_wmem_min"
+    value: "21292200"
