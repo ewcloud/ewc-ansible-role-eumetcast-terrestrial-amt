@@ -1,0 +1,314 @@
+---
+- name: Ensure client group exists
+  ansible.builtin.group:
+    name: "{{ linux_username }}"
+    state: present
+
+- name: Ensure client user exists
+  ansible.builtin.user:
+    name: "{{ linux_username }}"
+    group: "{{ linux_username }}"
+    groups:
+      - sudo
+    append: true
+    shell: /bin/bash
+    create_home: true
+    comment: "{{ linux_username }} nologin User"
+    state: present
+
+- name: Download client archive
+  ansible.builtin.get_url:
+    url: "https://sftp.eumetsat.int/public/folder/uscvknvooksycdgpmimjnq/User-Materials/EUMETCast_Support/EUMETCast_Licence_cd/Linux/Tellicast/eum-ter-amt.tgz"
+    dest: "/tmp/eum-ter-amt.tgz"
+    mode: "0644"
+    force: false
+
+- name: Extract client archive
+  ansible.builtin.unarchive:
+    src: "/tmp/eum-ter-amt.tgz"
+    dest: "/home/{{ linux_username }}"
+    remote_src: true
+    owner: "{{ linux_username }}"
+    group: "{{ linux_username }}"
+    creates: "/home/{{ linux_username }}/eumter-amt"
+
+- name: Remove temporary archive file
+  ansible.builtin.file:
+    path: "/tmp/eum-ter-amt.tgz"
+    state: absent
+
+- name: Refresh apt cache
+  ansible.builtin.apt:
+    update_cache: true
+    cache_valid_time: 3600
+
+- name: Gather package facts
+  ansible.builtin.package_facts:
+    manager: auto
+
+- name: Check enabled foreign architectures
+  ansible.builtin.command:
+    cmd: dpkg --print-foreign-architectures
+  register: foreign_architectures
+  changed_when: false
+
+- name: Enable i386 architecture
+  ansible.builtin.command:
+    cmd: dpkg --add-architecture i386
+  when: "'i386' not in foreign_architectures.stdout_lines"
+  register: add_i386_architecture
+  changed_when: add_i386_architecture.rc == 0
+
+- name: Refresh apt cache after architecture change
+  ansible.builtin.apt:
+    update_cache: true
+  when: "'i386' not in foreign_architectures.stdout_lines"
+
+- name: Install Tellicast runtime dependencies
+  ansible.builtin.apt:
+    name:
+      - libc6:i386
+      - libncurses5:i386
+      - libstdc++6:i386
+      - iptables-persistent
+    state: present
+    update_cache: false
+
+- name: Install AMT gateway package
+  ansible.builtin.apt:
+    deb: "/home/{{ linux_username }}/eumter-amt/packages/{{ amtgwd_deb }}"
+    state: present
+  when: "'amtgwd' not in ansible_facts.packages"
+
+- name: Install Tellicast client package
+  ansible.builtin.apt:
+    deb: "/home/{{ linux_username }}/eumter-amt/packages/{{ tellicast_deb }}"
+    state: present
+  when: "'tellicast-client' not in ansible_facts.packages"
+
+- name: Deploy Tellicast init script
+  ansible.builtin.template:
+    src: tellicast-client.service.j2
+    dest: /etc/systemd/system/tellicast-client.service
+    owner: root
+    group: root
+    mode: '0755'
+  notify:
+    - Reload systemd daemon
+    - Restart tellicast-client
+
+- name: Check if Tellicast TER-3 instance configuration files is deployed (missing by default in AMT 2.0-2)
+  ansible.builtin.file:
+    path: "/etc/cast-client_ter-3.ini"
+    state: file
+  register: client_ter_3_ini_deployed
+  failed_when: false
+
+- name: Check if Tellicast TER-3 channel configuration files is deployed (missing by default in AMT 2.0-2)
+  ansible.builtin.file:
+    path: "/etc/cast-client-channels_ter-3.ini"
+    state: file
+  register: channel_ter_3_ini_deployed
+  failed_when: false
+
+- name: Deploy Tellicast TER-3 instance configuration file (missing by default in AMT 2.0-2)
+  ansible.builtin.copy:
+    src: "/home/{{ linux_username }}/eumter-amt/conf/cast-client_ter-3.ini"
+    dest: "/etc/cast-client_ter-3.ini"
+    remote_src: true
+    owner: root
+    group: root
+    mode: "0644"
+  when: client_ter_3_ini_deployed.state == "absent"
+  notify: Restart tellicast-client
+
+- name: Deploy Tellicast TER-3 channel configuration file (missing by default in AMT 2.0-2)
+  ansible.builtin.copy:
+    src: "/home/{{ linux_username }}/eumter-amt/conf/cast-client-channels_ter-3.ini"
+    dest: "/etc/cast-client-channels_ter-3.ini"
+    remote_src: true
+    owner: root
+    group: root
+    mode: "0644"
+  when: channel_ter_3_ini_deployed.state == "absent"
+  notify: Restart tellicast-client
+
+- name: Configure Tellicast username
+  ansible.builtin.lineinfile:
+    path: "/etc/cast-client_{{ item }}.ini"
+    regexp: "^user_name="
+    line: "user_name={{ tellicast_license_user_name }}"
+    state: present
+  loop: "{{ services }}"
+  no_log: true
+  notify: Restart tellicast-client
+
+- name: Configure Tellicast user key
+  ansible.builtin.lineinfile:
+    path: "/etc/cast-client_{{ item }}.ini"
+    regexp: "^user_key="
+    line: "user_key={{ tellicast_license_user_key }}"
+    state: present
+  loop: "{{ services }}"
+  no_log: true
+  notify: Restart tellicast-client
+
+- name: Configure Tellicast interface address
+  ansible.builtin.lineinfile:
+    path: "/etc/cast-client_{{ item }}.ini"
+    regexp: "^interface_address="
+    line: "interface_address={{ tellicast_interface_address }}"
+    state: present
+  loop: "{{ services }}"
+  notify: Restart tellicast-client
+
+- name: Configure Tellicast client user
+  ansible.builtin.lineinfile:
+    path: /etc/tellicast-client.cfg
+    regexp: "^TELLICAST_CLIENT_USER="
+    line: "TELLICAST_CLIENT_USER={{ linux_username }}"
+    state: present
+  notify: Restart tellicast-client
+
+- name: Configure Tellicast instance startup order
+  ansible.builtin.lineinfile:
+    path: /etc/tellicast-client.cfg
+    regexp: "^INSTANCE_START_ORDER="
+    line: "INSTANCE_START_ORDER={{ tellicast_instance_start_order }}"
+    state: present
+  notify: Restart tellicast-client
+
+- name: Configure Tellicast logging to normal level (required for readiness probe)
+  ansible.builtin.lineinfile:
+    path: "/etc/cast-client_{{ item }}.ini"
+    regexp: "^log_level="
+    line: "log_level=normal"
+    state: present
+  loop: "{{ services }}"
+  no_log: true
+  notify: Restart tellicast-client
+
+- name: Ensure tunnel service is enabled
+  ansible.builtin.systemd:
+    name: tunnel.service
+    enabled: true
+
+- name: Ensure tunnel service is running
+  ansible.builtin.systemd:
+    name: tunnel.service
+    state: started
+
+- name: Ensure amtgwd service is enabled
+  ansible.builtin.systemd:
+    name: amtgwd.service
+    enabled: true
+
+- name: Ensure amtgwd service is running
+  ansible.builtin.systemd:
+    name: amtgwd.service
+    state: started
+
+- name: Ensure tellicast-client service is enabled
+  ansible.builtin.service:
+    name: tellicast-client
+    enabled: true
+
+- name: Ensure tellicast-client service is running
+  ansible.builtin.service:
+    name: tellicast-client
+    state: started
+
+- name: Apply kernel networking parameters
+  ansible.posix.sysctl:
+    name: "{{ item.name }}"
+    value: "{{ item.value }}"
+    state: present
+    sysctl_set: true
+    reload: true
+  loop: "{{ sysctl_parameters }}"
+
+- name: Check existing NAT rule
+  ansible.builtin.command:
+    cmd: |
+      iptables --table nat
+      --check POSTROUTING
+      --destination {{ nat_destination_network }}
+      --jump SNAT
+      --to-source {{ ansible_facts["default_ipv4"]["address"] }}
+  register: nat_rule_check
+  changed_when: false
+  failed_when: false
+
+- name: Add NAT masquerade rule
+  ansible.builtin.command:
+    cmd: |
+      iptables --table nat
+      --append POSTROUTING
+      --destination {{ nat_destination_network }}
+      --jump SNAT
+      --to-source {{ ansible_facts["default_ipv4"]["address"] }}
+  register: nat_rule_add
+  when: nat_rule_check.rc != 0
+  changed_when: nat_rule_add.rc == 0
+  notify: Save iptables
+
+- name: Configure AMT log cleanup cron job
+  ansible.builtin.cron:
+    name: "amt-log-cleanup"
+    minute: "*/5"
+    user: "{{ linux_username }}"
+    job: "find /var/log/amt/ -mtime +7 -type f -delete"
+    state: present
+
+- name: Configure service data cleanup cron jobs
+  ansible.builtin.cron:
+    name: "eumetcast-data-cleanup-{{ item }}"
+    minute: "*/15"
+    user: "{{ linux_username }}"
+    job: "find /home/{{ linux_username }}/data/eumetcast/{{ item }}/default -cmin +5 -type f -delete"
+    state: present
+  loop: "{{ services }}"
+
+- name: Configure temporary data cleanup cron jobs
+  ansible.builtin.cron:
+    name: "eumetcast-temp-cleanup-{{ item }}"
+    minute: "*/15"
+    user: root
+    job: "find /home/{{ linux_username }}/data/tmp/{{ item }} -cmin +5 -type f -delete"
+    state: present
+  loop: "{{ services }}"
+
+- name: Gather package facts
+  ansible.builtin.package_facts:
+    manager: auto
+
+- name: List installed package versions
+  ansible.builtin.shell:
+    cmd: |
+      echo "{{ ansible_facts.packages }}" > /tmp/packages.json
+
+- name: List installed package versions
+  ansible.builtin.debug:
+    msg:
+      - "libc6:i386: {{ ansible_facts.packages['libc6:i386'][0].version }}"
+      - "libncurses5:i386: {{ ansible_facts.packages['libncurses5:i386'][0].version }}"
+      - "libstdc++6:i386: {{ ansible_facts.packages['libstdc++6:i386'][0].version }}"
+      - "iptables-persistent: {{ ansible_facts.packages['iptables-persistent'][0].version }}"
+      - "amt: {{ ansible_facts.packages['amt'][0].version }}"
+      - "tellicast-client: {{ ansible_facts.packages['tellicast-client'][0].version }}"
+
+- name: Probe for readiness
+  ansible.builtin.shell:
+    cmd: |
+      set -o pipefail
+      success_log_msg=$(grep "Receiver active" /var/log/tellicast-client/recv_ter-*.log | sort | tail -n 1 );
+      if [ -z "$success_log_msg" ]; then
+        exit 1
+      fi
+  args:
+    executable: /bin/bash
+  register: readiness_probe
+  retries: 24
+  delay: 10
+  until: readiness_probe.rc == 0
+  changed_when: false

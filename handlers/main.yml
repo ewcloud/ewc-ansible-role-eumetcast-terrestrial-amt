@@ -1,0 +1,23 @@
+---
+- name: Restart tellicast-client
+  ansible.builtin.systemd:
+    name: tellicast-client
+    state: restarted
+
+- name: Reload systemd daemon
+  ansible.builtin.systemd:
+    daemon_reload: true
+
+- name: Save iptables
+  ansible.builtin.command:
+    cmd: netfilter-persistent save
+  changed_when: true
+  notify: Reset iptables permissions
+
+- name: Reset iptables permissions
+  ansible.builtin.file:
+    path: /etc/iptables/rules.v4
+    owner: root
+    group: root
+    mode: "0644"
+  changed_when: true

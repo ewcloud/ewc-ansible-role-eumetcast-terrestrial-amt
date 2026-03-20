@@ -1,0 +1,31 @@
+[Unit]
+Documentation=man:systemd-sysv-generator(8)
+SourcePath=/etc/init.d/tellicast-client
+Description=LSB: Tellicast client
+Before=multi-user.target
+Before=multi-user.target
+Before=multi-user.target
+Before=graphical.target
+After=network.target
+After=network-online.target
+After=tunnel.target
+After=amtgwd.target
+Wants=network.target
+Wants=network-online.target
+Wants=tunnel.target
+Wants=amtgwd.target
+
+[Service]
+Type=forking
+Restart=no
+TimeoutSec=5min
+IgnoreSIGPIPE=no
+KillMode=process
+GuessMainPID=no
+RemainAfterExit=yes
+SuccessExitStatus=5 6
+ExecStart=/etc/init.d/tellicast-client start
+ExecStop=/etc/init.d/tellicast-client stop
+
+[Install]
+WantedBy=multi-user.target
