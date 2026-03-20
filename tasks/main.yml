@@ -15,3 +15,24 @@
     create_home: true
     comment: "{{ linux_username }} nologin User"
     state: present
+
+- name: Download client archive
+  ansible.builtin.get_url:
+    url: "https://sftp.eumetsat.int/public/folder/uscvknvooksycdgpmimjnq/User-Materials/EUMETCast_Support/EUMETCast_Licence_cd/Linux/Tellicast/eum-ter-amt.tgz"
+    dest: "/tmp/eum-ter-amt.tgz"
+    mode: "0644"
+    force: false
+
+- name: Extract client archive
+  ansible.builtin.unarchive:
+    src: "/tmp/eum-ter-amt.tgz"
+    dest: "/home/{{ linux_username }}"
+    remote_src: true
+    owner: "{{ linux_username }}"
+    group: "{{ linux_username }}"
+    creates: "/home/{{ linux_username }}/eumter-amt"
+
+- name: Remove temporary archive file
+  ansible.builtin.file:
+    path: "/tmp/eum-ter-amt.tgz"
+    state: absent
