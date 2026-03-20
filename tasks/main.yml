@@ -1,4 +1,12 @@
 ---
+- name: Validate user inputs
+  ansible.builtin.assert:
+    that:
+      - tellicast_license_user_name is string and tellicast_license_user_name != '' and tellicast_license_user_name is defined
+      - tellicast_license_user_key is string and tellicast_license_user_key != '' and tellicast_license_user_key is defined
+    fail_msg: "Input validation failed. See README.md for information on required inputs and their format."
+    success_msg: "User input configuration is valid."
+
 - name: Ensure client group exists
   ansible.builtin.group:
     name: "{{ linux_username }}"
