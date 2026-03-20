@@ -96,3 +96,39 @@
   notify:
     - Reload systemd daemon
     - Restart tellicast-client
+
+- name: Check if Tellicast TER-3 instance configuration files is deployed (missing by default in AMT 2.0-2)
+  ansible.builtin.file:
+    path: "/etc/cast-client_ter-3.ini"
+    state: file
+  register: client_ter_3_ini_deployed
+  failed_when: false
+
+- name: Check if Tellicast TER-3 channel configuration files is deployed (missing by default in AMT 2.0-2)
+  ansible.builtin.file:
+    path: "/etc/cast-client-channels_ter-3.ini"
+    state: file
+  register: channel_ter_3_ini_deployed
+  failed_when: false
+
+- name: Deploy Tellicast TER-3 instance configuration file (missing by default in AMT 2.0-2)
+  ansible.builtin.copy:
+    src: "/home/{{ linux_username }}/eumter-amt/conf/cast-client_ter-3.ini"
+    dest: "/etc/cast-client_ter-3.ini"
+    remote_src: true
+    owner: root
+    group: root
+    mode: "0644"
+  when: client_ter_3_ini_deployed.state == "absent"
+  notify: Restart tellicast-client
+
+- name: Deploy Tellicast TER-3 channel configuration file (missing by default in AMT 2.0-2)
+  ansible.builtin.copy:
+    src: "/home/{{ linux_username }}/eumter-amt/conf/cast-client-channels_ter-3.ini"
+    dest: "/etc/cast-client-channels_ter-3.ini"
+    remote_src: true
+    owner: root
+    group: root
+    mode: "0644"
+  when: channel_ter_3_ini_deployed.state == "absent"
+  notify: Restart tellicast-client
