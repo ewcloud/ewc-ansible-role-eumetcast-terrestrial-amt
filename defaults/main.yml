@@ -2,3 +2,9 @@
 linux_username: eumetuser
 tellicast_deb: tellicast-client-2.14.7-1_i386.deb
 amtgwd_deb: amt_2.0-2_amd64.deb
+tellicast_interface_address: "10.187.0.11"
+tellicast_instance_start_order: "ter-1,ter-2,ter-3"
+services:
+  - ter-1
+  - ter-2
+  - ter-3

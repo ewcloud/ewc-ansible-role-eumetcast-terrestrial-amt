@@ -132,3 +132,88 @@
     mode: "0644"
   when: channel_ter_3_ini_deployed.state == "absent"
   notify: Restart tellicast-client
+
+- name: Configure Tellicast username
+  ansible.builtin.lineinfile:
+    path: "/etc/cast-client_{{ item }}.ini"
+    regexp: "^user_name="
+    line: "user_name={{ tellicast_license_user_name }}"
+    state: present
+  loop: "{{ services }}"
+  no_log: true
+  notify: Restart tellicast-client
+
+- name: Configure Tellicast user key
+  ansible.builtin.lineinfile:
+    path: "/etc/cast-client_{{ item }}.ini"
+    regexp: "^user_key="
+    line: "user_key={{ tellicast_license_user_key }}"
+    state: present
+  loop: "{{ services }}"
+  no_log: true
+  notify: Restart tellicast-client
+
+- name: Configure Tellicast interface address
+  ansible.builtin.lineinfile:
+    path: "/etc/cast-client_{{ item }}.ini"
+    regexp: "^interface_address="
+    line: "interface_address={{ tellicast_interface_address }}"
+    state: present
+  loop: "{{ services }}"
+  notify: Restart tellicast-client
+
+- name: Configure Tellicast client user
+  ansible.builtin.lineinfile:
+    path: /etc/tellicast-client.cfg
+    regexp: "^TELLICAST_CLIENT_USER="
+    line: "TELLICAST_CLIENT_USER={{ linux_username }}"
+    state: present
+  notify: Restart tellicast-client
+
+- name: Configure Tellicast instance startup order
+  ansible.builtin.lineinfile:
+    path: /etc/tellicast-client.cfg
+    regexp: "^INSTANCE_START_ORDER="
+    line: "INSTANCE_START_ORDER={{ tellicast_instance_start_order }}"
+    state: present
+  notify: Restart tellicast-client
+
+- name: Configure Tellicast logging to normal level (required for readiness probe)
+  ansible.builtin.lineinfile:
+    path: "/etc/cast-client_{{ item }}.ini"
+    regexp: "^log_level="
+    line: "log_level=normal"
+    state: present
+  loop: "{{ services }}"
+  no_log: true
+  notify: Restart tellicast-client
+
+- name: Ensure tunnel service is enabled
+  ansible.builtin.systemd:
+    name: tunnel.service
+    enabled: true
+
+- name: Ensure tunnel service is running
+  ansible.builtin.systemd:
+    name: tunnel.service
+    state: started
+
+- name: Ensure amtgwd service is enabled
+  ansible.builtin.systemd:
+    name: amtgwd.service
+    enabled: true
+
+- name: Ensure amtgwd service is running
+  ansible.builtin.systemd:
+    name: amtgwd.service
+    state: started
+
+- name: Ensure tellicast-client service is enabled
+  ansible.builtin.service:
+    name: tellicast-client
+    enabled: true
+
+- name: Ensure tellicast-client service is running
+  ansible.builtin.service:
+    name: tellicast-client
+    state: started
