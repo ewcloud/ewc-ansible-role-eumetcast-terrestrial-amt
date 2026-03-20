@@ -251,3 +251,29 @@
   when: nat_rule_check.rc != 0
   changed_when: nat_rule_add.rc == 0
   notify: Save iptables
+
+- name: Configure AMT log cleanup cron job
+  ansible.builtin.cron:
+    name: "amt-log-cleanup"
+    minute: "*/5"
+    user: "{{ linux_username }}"
+    job: "find /var/log/amt/ -mtime +7 -type f -delete"
+    state: present
+
+- name: Configure service data cleanup cron jobs
+  ansible.builtin.cron:
+    name: "eumetcast-data-cleanup-{{ item }}"
+    minute: "*/15"
+    user: "{{ linux_username }}"
+    job: "find /home/{{ linux_username }}/data/eumetcast/{{ item }}/default -cmin +5 -type f -delete"
+    state: present
+  loop: "{{ services }}"
+
+- name: Configure temporary data cleanup cron jobs
+  ansible.builtin.cron:
+    name: "eumetcast-temp-cleanup-{{ item }}"
+    minute: "*/15"
+    user: root
+    job: "find /home/{{ linux_username }}/data/tmp/{{ item }} -cmin +5 -type f -delete"
+    state: present
+  loop: "{{ services }}"
