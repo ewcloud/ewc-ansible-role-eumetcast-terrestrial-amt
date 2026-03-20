@@ -1,0 +1,17 @@
+---
+- name: Ensure client group exists
+  ansible.builtin.group:
+    name: "{{ linux_username }}"
+    state: present
+
+- name: Ensure client user exists
+  ansible.builtin.user:
+    name: "{{ linux_username }}"
+    group: "{{ linux_username }}"
+    groups:
+      - sudo
+    append: true
+    shell: /bin/bash
+    create_home: true
+    comment: "{{ linux_username }} nologin User"
+    state: present
