@@ -36,3 +36,40 @@
   ansible.builtin.file:
     path: "/tmp/eum-ter-amt.tgz"
     state: absent
+
+- name: Refresh apt cache
+  ansible.builtin.apt:
+    update_cache: true
+    cache_valid_time: 3600
+
+- name: Gather package facts
+  ansible.builtin.package_facts:
+    manager: auto
+
+- name: Check enabled foreign architectures
+  ansible.builtin.command:
+    cmd: dpkg --print-foreign-architectures
+  register: foreign_architectures
+  changed_when: false
+
+- name: Enable i386 architecture
+  ansible.builtin.command:
+    cmd: dpkg --add-architecture i386
+  when: "'i386' not in foreign_architectures.stdout_lines"
+  register: add_i386_architecture
+  changed_when: add_i386_architecture.rc == 0
+
+- name: Refresh apt cache after architecture change
+  ansible.builtin.apt:
+    update_cache: true
+  when: "'i386' not in foreign_architectures.stdout_lines"
+
+- name: Install Tellicast runtime dependencies
+  ansible.builtin.apt:
+    name:
+      - libc6:i386
+      - libncurses5:i386
+      - libstdc++6:i386
+      - iptables-persistent
+    state: present
+    update_cache: false
