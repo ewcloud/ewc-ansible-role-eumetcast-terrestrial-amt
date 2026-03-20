@@ -19,9 +19,19 @@ The resulting download of the data stream is kept in your target host, under the
 
 
 ## Copyright and License
-💡 The Tellicast client license credentials must be supplied externally at deployment time.
+Copyright © EUMETSAT 2026.
 
-See the [LICENSE](./LICENSE) file for licensing information as it pertains to files in this repository.
+The provided code and instructions are licensed under the [MIT license](./LICENSE).
+files in this repository.
+They are intended to automate the setup of an environment that includes 
+third-party software components.
+The usage and distribution terms of the resulting environment are 
+subject to the individual licenses of those third-party libraries.
+
+Users are responsible for reviewing and complying with the licenses of
+all third-party components included in the environment.
+
+Contact [EUMETSAT](http://www.eumetsat.int) for details on the usage and distribution terms.
 
 
 ## Infrastructure Requirements
@@ -102,11 +112,13 @@ ansible-playbook -i inventory.yml playbook.yml
 | tellicast_license_user_name | Tellicast license user identifier                    | `string` | n/a               |    yes   |
 | tellicast_license_user_key  | Tellicast license activation key                     | `string` | n/a               |    yes   |
 
-# Final Environment
+## SW Bill of Materials (SBoM)
 
-Applying this template will configure the target host with the following major runtime components:
+Third-party components used in the resulting environment.
 
-| Name | Version | License | Package Info |
+The following components will be included in the resulting environment:
+
+| Component | Version | License | Home URL |
 |------|---------|---------|--------------|
 | libc6:i386                   | 2.35 | GPL-3 | https://packages.debian.org/sid/i386/libc6/download |
 | libncurses5:i386             | 6.3 | GPL-3 | https://packages.debian.org/bullseye/i386/libncurses5/download |
