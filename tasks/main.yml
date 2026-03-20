@@ -73,3 +73,15 @@
       - iptables-persistent
     state: present
     update_cache: false
+
+- name: Install AMT gateway package
+  ansible.builtin.apt:
+    deb: "/home/{{ linux_username }}/eumter-amt/packages/{{ amtgwd_deb }}"
+    state: present
+  when: "'amtgwd' not in ansible_facts.packages"
+
+- name: Install Tellicast client package
+  ansible.builtin.apt:
+    deb: "/home/{{ linux_username }}/eumter-amt/packages/{{ tellicast_deb }}"
+    state: present
+  when: "'tellicast-client' not in ansible_facts.packages"
