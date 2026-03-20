@@ -67,10 +67,10 @@
 - name: Install Tellicast runtime dependencies
   ansible.builtin.apt:
     name:
-      - libc6:i386
-      - libncurses5:i386
-      - libstdc++6:i386
-      - iptables-persistent
+      - libc6:i386=2.35-0ubuntu3.13
+      - libncurses5:i386=6.3-2ubuntu0.1
+      - libstdc++6:i386=12.3.0-1ubuntu1~22.04.3
+      - iptables-persistent=1.0.16
     state: present
     update_cache: false
 
