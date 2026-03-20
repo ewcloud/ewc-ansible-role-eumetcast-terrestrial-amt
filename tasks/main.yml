@@ -277,3 +277,22 @@
     job: "find /home/{{ linux_username }}/data/tmp/{{ item }} -cmin +5 -type f -delete"
     state: present
   loop: "{{ services }}"
+
+- name: Gather package facts
+  ansible.builtin.package_facts:
+    manager: auto
+
+- name: List installed package versions
+  ansible.builtin.shell:
+    cmd: |
+      echo "{{ ansible_facts.packages }}" > /tmp/packages.json
+
+- name: List installed package versions
+  ansible.builtin.debug:
+    msg:
+      - "libc6:i386: {{ ansible_facts.packages['libc6:i386'][0].version }}"
+      - "libncurses5:i386: {{ ansible_facts.packages['libncurses5:i386'][0].version }}"
+      - "libstdc++6:i386: {{ ansible_facts.packages['libstdc++6:i386'][0].version }}"
+      - "iptables-persistent: {{ ansible_facts.packages['iptables-persistent'][0].version }}"
+      - "amt: {{ ansible_facts.packages['amt'][0].version }}"
+      - "tellicast-client: {{ ansible_facts.packages['tellicast-client'][0].version }}"
