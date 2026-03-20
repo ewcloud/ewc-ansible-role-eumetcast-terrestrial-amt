@@ -1,0 +1,9 @@
+---
+- name: Restart tellicast-client
+  ansible.builtin.systemd:
+    name: tellicast-client
+    state: restarted
+
+- name: Reload systemd daemon
+  ansible.builtin.systemd:
+    daemon_reload: true

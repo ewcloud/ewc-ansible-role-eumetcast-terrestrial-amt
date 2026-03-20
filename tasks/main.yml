@@ -85,3 +85,14 @@
     deb: "/home/{{ linux_username }}/eumter-amt/packages/{{ tellicast_deb }}"
     state: present
   when: "'tellicast-client' not in ansible_facts.packages"
+
+- name: Deploy Tellicast init script
+  ansible.builtin.template:
+    src: tellicast-client.service.j2
+    dest: /etc/systemd/system/tellicast-client.service
+    owner: root
+    group: root
+    mode: '0755'
+  notify:
+    - Reload systemd daemon
+    - Restart tellicast-client
