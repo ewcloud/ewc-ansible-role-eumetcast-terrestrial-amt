@@ -103,18 +103,17 @@ ansible-playbook -i inventory.yml playbook.yml
 | tellicast_license_user_key  | Tellicast license activation key                     | `string` | n/a               |    yes   |
 
 # Final Environment
-> ⚠️ Versions listed here refer only to those available for and Ubuntu packages as of March 20th, 2026. As new security patches/features are published by their authors, and newer Linux image versions are introduced into the EWC, the effective versions installed in your environment might be higher.
 
 Applying this template will configure the target host with the following major runtime components:
 
-| Name                         | Version                           | License                 | Package Info                 |
-| ---------------------------- | --------------------------------- | ----------------------- | ---------------------------- |
-| libc6:i386                   | >=2.35                   | GPL-3                    | https://packages.debian.org/sid/i386/libc6/download |
-| libncurses5:i386             | >=6.3                    | GPL-3 | https://packages.debian.org/bullseye/i386/libncurses5/download |
-| libstdc++6:i386              | >=2.35                    | GPL-3  | https://packages.debian.org/sid/i386/libstdc++6/download  |
-| netfilter-persistent         | >=1.0                    | GPL-3                     | https://packages.debian.org/bullseye/netfilter-persistent  |
-| amt                          | >=2.0                       |  BSD 3-Clause      | https://gitlab.eumetsat.int/open-source/amt |
-| Tellicast terrestrial client | >=2.14                    | The TelliCast Client software is proprietary software developed by ST-Engineering/iDirect for use with EUMETSAT's near-real-time data dissemination system, EUMETCast. As per contract EUM/CO/13/4600001246/LW, rider 13, EUMETSAT is authorized to distribute the binary software to users of the EUMETCast system, in accordance with the number of licenses procured from the service provider. No source code is provided. Please note: A) Users can download the software freely; however, access to the EUMETCast service itself requires registration via EUMETSAT's User Portal, and B) The software is only operational when used with valid EUMETCast credentials issued by the EUMETSAT Helpdesk. | https://sftp.eumetsat.int/public/folder/uscvknvooksycdgpmimjnq/User-Materials/EUMETCast_Support/EUMETCast_Licence_cd/Linux/Tellicast/ |
+| Name | Version | License | Package Info |
+|------|---------|---------|--------------|
+| libc6:i386                   | 2.35 | GPL-3 | https://packages.debian.org/sid/i386/libc6/download |
+| libncurses5:i386             | 6.3 | GPL-3 | https://packages.debian.org/bullseye/i386/libncurses5/download |
+| libstdc++6:i386              | 2.35 | GPL-3 | https://packages.debian.org/sid/i386/libstdc++6/download  |
+| netfilter-persistent         | 1.0  | GPL-3 | https://packages.debian.org/bullseye/netfilter-persistent  |
+| amt                          | 2.0  |  BSD 3-Clause "New" or "Revised" | https://gitlab.eumetsat.int/open-source/amt |
+| Tellicast terrestrial client | 2.14  | The TelliCast Client software is proprietary software developed by ST-Engineering/iDirect for use with EUMETSAT's near-real-time data dissemination system, EUMETCast. As per contract EUM/CO/13/4600001246/LW, rider 13, EUMETSAT is authorized to distribute the binary software to users of the EUMETCast system, in accordance with the number of licenses procured from the service provider. No source code is provided. Please note: A) Users can download the software freely; however, access to the EUMETCast service itself requires registration via EUMETSAT's User Portal, and B) The software is only operational when used with valid EUMETCast credentials issued by the EUMETSAT Helpdesk. | https://sftp.eumetsat.int/public/folder/uscvknvooksycdgpmimjnq/User-Materials/EUMETCast_Support/EUMETCast_Licence_cd/Linux/Tellicast/ |
 
 
 
