@@ -97,7 +97,7 @@ Then, proceed to create an Ansible Playbook file to load your customizations:
     - ewc-ansible-role-eumetcast-terrestrial-amt
 ```
 
-# 3. Apply the template
+### 3. Apply the template
 
 You can apply changes on the target host by running:
 
@@ -105,7 +105,7 @@ You can apply changes on the target host by running:
 ansible-playbook -i inventory.yml playbook.yml
 ```
 
-# Inputs
+## Inputs
 
 | Name                        | Description                                          | Type     | Default           | Required |
 | --------------------------- | ---------------------------------------------------- | -------- | ----------------- | :------: |
@@ -128,21 +128,21 @@ The following components will be included in the resulting environment:
 | Tellicast terrestrial client | 2.14  | The TelliCast Client software is proprietary software developed by ST-Engineering/iDirect for use with EUMETSAT's near-real-time data dissemination system, EUMETCast. As per contract EUM/CO/13/4600001246/LW, rider 13, EUMETSAT is authorized to distribute the binary software to users of the EUMETCast system, in accordance with the number of licenses procured from the service provider. No source code is provided. Please note: A) Users can download the software freely; however, access to the EUMETCast service itself requires registration via EUMETSAT's User Portal, and B) The software is only operational when used with valid EUMETCast credentials issued by the EUMETSAT Helpdesk. | https://sftp.eumetsat.int/public/folder/uscvknvooksycdgpmimjnq/User-Materials/EUMETCast_Support/EUMETCast_Licence_cd/Linux/Tellicast/ |
 
 
+## Changelog
+All notable changes (i.e. fixes, features and breaking changes) are documented 
+in the [CHANGELOG.md](./CHANGELOG.md).
 
-# Changelog
 
-All notable changes (i.e. fixes, features and breaking changes) are documented in the [CHANGELOG.md](./CHANGELOG.md).
+## Contributing
 
-# Contributing
-
-Thanks for taking the time to contribute.
-
+Thanks for taking the time to join our community and start contributing!
 Please make sure to:
+* Familiarize yourself with our [Code of Conduct](./CODE_OF_CONDUCT.md) before 
+contributing.
+* See [CONTRIBUTING.md](./CONTRIBUTING.md) for instructions on how to request 
+or submit changes.
 
-* Familiarize yourself with our [CODE_OF_CONDUCT.md](./CODE_OF_CONDUCT.md)
-* See [CONTRIBUTING.md](./CONTRIBUTING.md) for contribution instructions
+## Authors
 
-# Authors
-
-European Weather Cloud
-[support@europeanweather.cloud](mailto:support@europeanweather.cloud)
+[European Weather Cloud](http://support.europeanweather.cloud/) 
+<[support@europeanweather.cloud](mailto:support@europeanweather.cloud)>
