@@ -31,26 +31,25 @@
     comment: "{{ linux_username }} nologin User"
     state: present
 
-- name: Download client archive
+- name: Create dedicated directory to store download client .deb files
+  ansible.builtin.file:
+    path: /home/{{ linux_username }}/eumter-amt/packages
+    state: directory
+    mode: "0644"
+
+- name: Download AMT client .deb file from EUMETSAT GitLab's package registry
   ansible.builtin.get_url:
-    url: "https://sftp.eumetsat.int/public/folder/uscvknvooksycdgpmimjnq/User-Materials/EUMETCast_Support/EUMETCast_Licence_cd/Linux/Tellicast/eum-ter-amt.tgz"
-    dest: "/tmp/eum-ter-amt.tgz"
+    url: "https://gitlab.eumetsat.int/open-source/amt/-/package_files/1611839/download"
+    dest: "/home/{{ linux_username }}/eumter-amt/packages/{{ amtgwd_deb }}"
     mode: "0644"
     force: false
 
-- name: Extract client archive
-  ansible.builtin.unarchive:
-    src: "/tmp/eum-ter-amt.tgz"
-    dest: "/home/{{ linux_username }}"
-    remote_src: true
-    owner: "{{ linux_username }}"
-    group: "{{ linux_username }}"
-    creates: "/home/{{ linux_username }}/eumter-amt"
-
-- name: Remove temporary archive file
-  ansible.builtin.file:
-    path: "/tmp/eum-ter-amt.tgz"
-    state: absent
+- name: Download Tellicast client .deb file from EUMETSAT SFTP server
+  ansible.builtin.get_url:
+    url: "https://sftp.eumetsat.int/public/folder/uscvknvooksycdgpmimjnq/User-Materials/EUMETCast_Support/EUMETCast_Licence_cd/Linux/Tellicast/{{ tellicast_deb }}"
+    dest: "/home/{{ linux_username }}/eumter-amt/packages/{{ tellicast_deb }}"
+    mode: "0644"
+    force: false
 
 - name: Refresh apt cache
   ansible.builtin.apt:
