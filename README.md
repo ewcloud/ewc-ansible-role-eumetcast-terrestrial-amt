@@ -7,15 +7,16 @@ to customize your environment in the
 
 The template is designed to:
 
-* Configure pre-existing virtual machines such that they:
+* Configure pre-existing virtual machines running Ubuntu 22, with a minimum recommended 64GB of RAM and 1TB+ of storage, such that they:
 
-  * Install and configure the [EUMETCast Terrestrial](https://user.eumetsat.int/data-access/eumetcast-terrestrial) client over Automatic Multicast Tunnelling (AMT)
+  * Install and configure the [EUMETCast Terrestrial](https://user.eumetsat.int/data-access/eumetcast-terrestrial) client over [Automatic Multicast Tunnelling (AMT)](https://gitlab.eumetsat.int/open-source/amt)
   * Deploy the Tellicast terrestrial receiver runtime
   * Configure network translation required for multicast reception over AMT
   * Create maintenance jobs for log and data retention
 
-EUMETCast Terrestrial over AMT can serve any user hosted on a cloud, from AWS to the EWC, regardless of native multicast connectivity. The encapsulated data can travel via GEANT network or the commercial internet.
-The resulting download of the data stream is kept in your target host, under the `/home/eumetuser/data` subdirectory.
+EUMETCast Terrestrial over AMT can serve any network, regardless of native multicast connectivity, but provided `UDP` traffic is allowed on port `2268`. The encapsulated data can travel via GEANT network or the commercial internet.
+
+The downloaded data stream is kept in your target host's disk, under the `/home/eumetuser/data` subdirectory.
 
 
 ## Copyright and License
@@ -32,21 +33,6 @@ Users are responsible for reviewing and complying with the licenses of
 all third-party components included in the environment.
 
 Contact [EUMETSAT](http://www.eumetsat.int) for details on the usage and distribution terms.
-
-
-## Infrastructure Requirements
-
-Recommended target virtual machine profile:
-
-| Resource | Recommended                                |
-| -------- | ------------------------------------------ |
-| OS       | Ubuntu 22.04                               |
-| CPU      | 8 vCPU minimum                             |
-| RAM      | 64 GB                                      |
-| Storage  | 1 TB+                                      |
-| Network  | Private network with outbound connectivity |
-| Security Group | UDP 2268 allowed                           |
-
 
 
 ## Usage
@@ -113,8 +99,6 @@ ansible-playbook -i inventory.yml playbook.yml
 | tellicast_license_user_key  | Tellicast license activation key                     | `string` | n/a               |    yes   |
 
 ## SW Bill of Materials (SBoM)
-
-Third-party components used in the resulting environment.
 
 The following components will be included in the resulting environment:
 

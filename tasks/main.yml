@@ -31,26 +31,25 @@
     comment: "{{ linux_username }} nologin User"
     state: present
 
-- name: Download client archive
+- name: Create dedicated directory to store download client .deb files
+  ansible.builtin.file:
+    path: /home/{{ linux_username }}/eumter-amt/packages
+    state: directory
+    mode: "0644"
+
+- name: Download AMT client .deb file from EUMETSAT GitLab's package registry
   ansible.builtin.get_url:
-    url: "https://sftp.eumetsat.int/public/folder/uscvknvooksycdgpmimjnq/User-Materials/EUMETCast_Support/EUMETCast_Licence_cd/Linux/Tellicast/eum-ter-amt.tgz"
-    dest: "/tmp/eum-ter-amt.tgz"
+    url: "https://gitlab.eumetsat.int/open-source/amt/-/package_files/1611839/download"
+    dest: "/home/{{ linux_username }}/eumter-amt/packages/{{ amtgwd_deb }}"
     mode: "0644"
     force: false
 
-- name: Extract client archive
-  ansible.builtin.unarchive:
-    src: "/tmp/eum-ter-amt.tgz"
-    dest: "/home/{{ linux_username }}"
-    remote_src: true
-    owner: "{{ linux_username }}"
-    group: "{{ linux_username }}"
-    creates: "/home/{{ linux_username }}/eumter-amt"
-
-- name: Remove temporary archive file
-  ansible.builtin.file:
-    path: "/tmp/eum-ter-amt.tgz"
-    state: absent
+- name: Download Tellicast client .deb file from EUMETSAT SFTP server
+  ansible.builtin.get_url:
+    url: "https://sftp.eumetsat.int/public/folder/uscvknvooksycdgpmimjnq/User-Materials/EUMETCast_Support/EUMETCast_Licence_cd/Linux/Tellicast/{{ tellicast_deb }}"
+    dest: "/home/{{ linux_username }}/eumter-amt/packages/{{ tellicast_deb }}"
+    mode: "0644"
+    force: false
 
 - name: Refresh apt cache
   ansible.builtin.apt:
@@ -111,42 +110,6 @@
   notify:
     - Reload systemd daemon
     - Restart tellicast-client
-
-- name: Check if Tellicast TER-3 instance configuration files is deployed (missing by default in AMT 2.0-2)
-  ansible.builtin.file:
-    path: "/etc/cast-client_ter-3.ini"
-    state: file
-  register: client_ter_3_ini_deployed
-  failed_when: false
-
-- name: Check if Tellicast TER-3 channel configuration files is deployed (missing by default in AMT 2.0-2)
-  ansible.builtin.file:
-    path: "/etc/cast-client-channels_ter-3.ini"
-    state: file
-  register: channel_ter_3_ini_deployed
-  failed_when: false
-
-- name: Deploy Tellicast TER-3 instance configuration file (missing by default in AMT 2.0-2)
-  ansible.builtin.copy:
-    src: "/home/{{ linux_username }}/eumter-amt/conf/cast-client_ter-3.ini"
-    dest: "/etc/cast-client_ter-3.ini"
-    remote_src: true
-    owner: root
-    group: root
-    mode: "0644"
-  when: client_ter_3_ini_deployed.state == "absent"
-  notify: Restart tellicast-client
-
-- name: Deploy Tellicast TER-3 channel configuration file (missing by default in AMT 2.0-2)
-  ansible.builtin.copy:
-    src: "/home/{{ linux_username }}/eumter-amt/conf/cast-client-channels_ter-3.ini"
-    dest: "/etc/cast-client-channels_ter-3.ini"
-    remote_src: true
-    owner: root
-    group: root
-    mode: "0644"
-  when: channel_ter_3_ini_deployed.state == "absent"
-  notify: Restart tellicast-client
 
 - name: Configure Tellicast username
   ansible.builtin.lineinfile:
@@ -296,11 +259,6 @@
 - name: Gather package facts
   ansible.builtin.package_facts:
     manager: auto
-
-- name: List installed package versions
-  ansible.builtin.shell:
-    cmd: |
-      echo "{{ ansible_facts.packages }}" > /tmp/packages.json
 
 - name: List installed package versions
   ansible.builtin.debug:
