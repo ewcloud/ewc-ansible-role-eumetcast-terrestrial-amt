@@ -297,11 +297,6 @@
     manager: auto
 
 - name: List installed package versions
-  ansible.builtin.shell:
-    cmd: |
-      echo "{{ ansible_facts.packages }}" > /tmp/packages.json
-
-- name: List installed package versions
   ansible.builtin.debug:
     msg:
       - "libc6:i386: {{ ansible_facts.packages['libc6:i386'][0].version }}"
