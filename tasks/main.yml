@@ -3,7 +3,7 @@
   ansible.builtin.assert:
     that:
       - tellicast_username is string and tellicast_username != '' and tellicast_username is defined
-      - tellicast_license_user_key is string and tellicast_license_user_key != '' and tellicast_license_user_key is defined
+      - tellicast_user_key is string and tellicast_user_key != '' and tellicast_user_key is defined
     fail_msg: "Input validation failed. See README.md for information on required inputs and their format."
     success_msg: "User input configuration is valid."
 
@@ -125,7 +125,7 @@
   ansible.builtin.lineinfile:
     path: "/etc/cast-client_{{ item }}.ini"
     regexp: "^user_key="
-    line: "user_key={{ tellicast_license_user_key }}"
+    line: "user_key={{ tellicast_user_key }}"
     state: present
   loop: "{{ services }}"
   no_log: true
