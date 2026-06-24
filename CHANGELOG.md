@@ -3,6 +3,13 @@
 All notable changes to this project are documented in this file. See
 [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.0.2](https://github.com/ewcloud/ewc-ansible-role-eumetcast-terrestrial-amt/compare/1.0.1...1.0.2) (2026-06-24)
+
+
+### Bug Fixes
+
+* missed variable ([a182f08](https://github.com/ewcloud/ewc-ansible-role-eumetcast-terrestrial-amt/commit/a182f087cb63fccfb4a327f48cf16418663a981c))
+
 ## [1.0.1](https://github.com/ewcloud/ewc-ansible-role-eumetcast-terrestrial-amt/compare/1.0.0...1.0.1) (2026-06-24)
 
 
