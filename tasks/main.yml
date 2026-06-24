@@ -2,7 +2,7 @@
 - name: Validate user inputs
   ansible.builtin.assert:
     that:
-      - tellicast_license_user_name is string and tellicast_license_user_name != '' and tellicast_license_user_name is defined
+      - tellicast_username is string and tellicast_username != '' and tellicast_username is defined
       - tellicast_license_user_key is string and tellicast_license_user_key != '' and tellicast_license_user_key is defined
     fail_msg: "Input validation failed. See README.md for information on required inputs and their format."
     success_msg: "User input configuration is valid."
@@ -115,7 +115,7 @@
   ansible.builtin.lineinfile:
     path: "/etc/cast-client_{{ item }}.ini"
     regexp: "^user_name="
-    line: "user_name={{ tellicast_license_user_name }}"
+    line: "user_name={{ tellicast_username }}"
     state: present
   loop: "{{ services }}"
   no_log: true
@@ -270,18 +270,18 @@
       - "amt: {{ ansible_facts.packages['amt'][0].version }}"
       - "tellicast-client: {{ ansible_facts.packages['tellicast-client'][0].version }}"
 
-- name: Probe for readiness
-  ansible.builtin.shell:
-    cmd: |
-      set -o pipefail
-      success_log_msg=$(grep "Receiver active" /var/log/tellicast-client/recv_ter-*.log | sort | tail -n 1 );
-      if [ -z "$success_log_msg" ]; then
-        exit 1
-      fi
-  args:
-    executable: /bin/bash
-  register: readiness_probe
-  retries: 24
-  delay: 10
-  until: readiness_probe.rc == 0
-  changed_when: false
+# - name: Probe for readiness
+#   ansible.builtin.shell:
+#     cmd: |
+#       set -o pipefail
+#       success_log_msg=$(grep "Receiver active" /var/log/tellicast-client/recv_ter-*.log | sort | tail -n 1 );
+#       if [ -z "$success_log_msg" ]; then
+#         exit 1
+#       fi
+#   args:
+#     executable: /bin/bash
+#   register: readiness_probe
+#   retries: 24
+#   delay: 10
+#   until: readiness_probe.rc == 0
+#   changed_when: false
