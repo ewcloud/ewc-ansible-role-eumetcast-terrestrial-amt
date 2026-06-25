@@ -3,6 +3,13 @@
 All notable changes to this project are documented in this file. See
 [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.1.0](https://github.com/ewcloud/ewc-ansible-role-eumetcast-terrestrial-amt/compare/1.0.2...1.1.0) (2026-06-25)
+
+
+### Features
+
+* allow test user to delete AMT logs via ACL ([#3](https://github.com/ewcloud/ewc-ansible-role-eumetcast-terrestrial-amt/issues/3)) ([ed8cd34](https://github.com/ewcloud/ewc-ansible-role-eumetcast-terrestrial-amt/commit/ed8cd340e3ae5793b148dce63ab81f20dceab3c0))
+
 ## [1.0.2](https://github.com/ewcloud/ewc-ansible-role-eumetcast-terrestrial-amt/compare/1.0.1...1.0.2) (2026-06-24)
 
 
