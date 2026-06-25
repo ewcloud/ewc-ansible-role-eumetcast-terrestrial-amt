@@ -291,18 +291,18 @@
       - "amt: {{ ansible_facts.packages['amt'][0].version }}"
       - "tellicast-client: {{ ansible_facts.packages['tellicast-client'][0].version }}"
 
-# - name: Probe for readiness
-#   ansible.builtin.shell:
-#     cmd: |
-#       set -o pipefail
-#       success_log_msg=$(grep "Receiver active" /var/log/tellicast-client/recv_ter-*.log | sort | tail -n 1 );
-#       if [ -z "$success_log_msg" ]; then
-#         exit 1
-#       fi
-#   args:
-#     executable: /bin/bash
-#   register: readiness_probe
-#   retries: 24
-#   delay: 10
-#   until: readiness_probe.rc == 0
-#   changed_when: false
+- name: Probe for readiness
+  ansible.builtin.shell:
+    cmd: |
+      set -o pipefail
+      success_log_msg=$(grep "Receiver active" /var/log/tellicast-client/recv_ter-*.log | sort | tail -n 1 );
+      if [ -z "$success_log_msg" ]; then
+        exit 1
+      fi
+  args:
+    executable: /bin/bash
+  register: readiness_probe
+  retries: 24
+  delay: 10
+  until: readiness_probe.rc == 0
+  changed_when: false
