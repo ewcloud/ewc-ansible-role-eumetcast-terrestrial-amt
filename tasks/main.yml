@@ -230,6 +230,27 @@
   changed_when: nat_rule_add.rc == 0
   notify: Save iptables
 
+- name: Ensure AMT log directory exists
+  ansible.builtin.file:
+    path: /var/log/amt
+    state: directory
+    owner: root
+    group: root
+    mode: "0755"
+
+- name: Ensure ACL package is installed
+  ansible.builtin.package:
+    name: acl
+    state: present
+
+- name: Allow test user to delete AMT logs
+  ansible.posix.acl:
+    path: /var/log/amt
+    entity: "{{ linux_username }}"
+    etype: user
+    permissions: rwx
+    state: present
+
 - name: Configure AMT log cleanup cron job
   ansible.builtin.cron:
     name: "amt-log-cleanup"
