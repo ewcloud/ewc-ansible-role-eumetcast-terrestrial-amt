@@ -3,6 +3,13 @@
 All notable changes to this project are documented in this file. See
 [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.2.0](https://github.com/ewcloud/ewc-ansible-role-eumetcast-terrestrial-amt/compare/1.1.0...1.2.0) (2026-06-25)
+
+
+### Features
+
+* reenable final check ([#5](https://github.com/ewcloud/ewc-ansible-role-eumetcast-terrestrial-amt/issues/5)) ([97dfafd](https://github.com/ewcloud/ewc-ansible-role-eumetcast-terrestrial-amt/commit/97dfafdaf902e068298ebc323cfcfb7d26ebce7c))
+
 # [1.1.0](https://github.com/ewcloud/ewc-ansible-role-eumetcast-terrestrial-amt/compare/1.0.2...1.1.0) (2026-06-25)
 
 
