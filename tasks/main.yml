@@ -272,7 +272,7 @@
   ansible.builtin.cron:
     name: "eumetcast-temp-cleanup-{{ item }}"
     minute: "*/15"
-    user: root
+    user: "{{ linux_username }}"
     job: "find /home/{{ linux_username }}/data/tmp/{{ item }} -cmin +5 -type f -delete"
     state: present
   loop: "{{ services }}"
