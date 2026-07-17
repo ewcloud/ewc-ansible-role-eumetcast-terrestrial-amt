@@ -3,6 +3,13 @@
 All notable changes to this project are documented in this file. See
 [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.0.2](https://github.com/ewcloud/ewc-ansible-role-eumetcast-terrestrial-amt/compare/1.0.1...1.0.2) (2026-07-17)
+
+
+### Bug Fixes
+
+* Remove version pinning and generate SBOM automatically ([#8](https://github.com/ewcloud/ewc-ansible-role-eumetcast-terrestrial-amt/issues/8)) ([f549b9d](https://github.com/ewcloud/ewc-ansible-role-eumetcast-terrestrial-amt/commit/f549b9dea5e70d46c49976109957c5529122ef45))
+
 ## [1.0.1](https://github.com/ewcloud/ewc-ansible-role-eumetcast-terrestrial-amt/compare/1.0.0...1.0.1) (2026-07-17)
 
 
