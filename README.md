@@ -29,6 +29,9 @@ third-party software components.
 The usage and distribution terms of the resulting environment are 
 subject to the individual licenses of those third-party libraries.
 
+The TelliCast Client software is proprietary software developed by ST-Engineering/iDirect for use with EUMETSAT's near-real-time data dissemination system, EUMETCast. As per contract EUM/CO/13/4600001246/LW, rider 13, EUMETSAT is authorized to distribute the binary software to users of the EUMETCast system, in accordance with the number of licenses procured from the service provider. No source code is provided. 
+Please note: A) Users can download the software freely; however, access to the EUMETCast service itself requires registration via EUMETSAT's User Portal, and B) The software is only operational when used with valid EUMETCast credentials issued by the EUMETSAT Helpdesk.
+
 Users are responsible for reviewing and complying with the licenses of
 all third-party components included in the environment.
 
@@ -98,18 +101,21 @@ ansible-playbook -i inventory.yml playbook.yml
 | tellicast_license_user_name | Tellicast license user identifier                    | `string` | n/a               |    yes   |
 | tellicast_license_user_key  | Tellicast license activation key                     | `string` | n/a               |    yes   |
 
-## SW Bill of Materials (SBoM)
+## Dependencies
 
-The following components will be included in the resulting environment:
+> 💡 Upon execution, a SBOM (SPDX format) is auto-generated and stored in the VM's file system root directory (see /sbom.json).
 
-| Component | Version | License | Home URL |
-|------|---------|---------|--------------|
-| libc6:i386                   | 2.35 | GPL-3 | https://packages.debian.org/sid/i386/libc6/download |
-| libncurses5:i386             | 6.3 | GPL-3 | https://packages.debian.org/bullseye/i386/libncurses5/download |
-| libstdc++6:i386              | 2.35 | GPL-3 | https://packages.debian.org/sid/i386/libstdc++6/download  |
-| netfilter-persistent         | 1.0  | GPL-3 | https://packages.debian.org/bullseye/netfilter-persistent  |
-| amt                          | 2.0  |  BSD 3-Clause "New" or "Revised" | https://gitlab.eumetsat.int/open-source/amt |
-| Tellicast terrestrial client | 2.14  | The TelliCast Client software is proprietary software developed by ST-Engineering/iDirect for use with EUMETSAT's near-real-time data dissemination system, EUMETCast. As per contract EUM/CO/13/4600001246/LW, rider 13, EUMETSAT is authorized to distribute the binary software to users of the EUMETCast system, in accordance with the number of licenses procured from the service provider. No source code is provided. Please note: A) Users can download the software freely; however, access to the EUMETCast service itself requires registration via EUMETSAT's User Portal, and B) The software is only operational when used with valid EUMETCast credentials issued by the EUMETSAT Helpdesk. | https://sftp.eumetsat.int/public/folder/uscvknvooksycdgpmimjnq/User-Materials/EUMETCast_Support/EUMETCast_Licence_cd/Linux/Tellicast/ |
+Third-party components used in the resulting environment.
+
+| Component | Home URL |
+|------|---------|
+| libc6:i386                   | https://packages.debian.org/sid/i386/libc6/download |
+| libncurses5:i386             | https://packages.debian.org/bullseye/i386/libncurses5/download |
+| libstdc++6:i386              | https://packages.debian.org/sid/i386/libstdc++6/download  |
+| netfilter-persistent         | https://packages.debian.org/bullseye/netfilter-persistent  |
+| amt                          | https://gitlab.eumetsat.int/open-source/amt |
+| Tellicast terrestrial client | https://sftp.eumetsat.int/public/folder/uscvknvooksycdgpmimjnq/User-Materials/EUMETCast_Support/EUMETCast_Licence_cd/Linux/Tellicast/ | 
+
 
 
 ## Changelog

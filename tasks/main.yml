@@ -81,10 +81,10 @@
 - name: Install Tellicast runtime dependencies
   ansible.builtin.apt:
     name:
-      - libc6:i386=2.35-0ubuntu3.13
-      - libncurses5:i386=6.3-2ubuntu0.1
-      - libstdc++6:i386=12.3.0-1ubuntu1~22.04.3
-      - iptables-persistent=1.0.16
+      - libc6:i386
+      - libncurses5:i386
+      - libstdc++6:i386
+      - iptables-persistent
     state: present
     update_cache: false
 
@@ -285,3 +285,18 @@
   delay: 10
   until: readiness_probe.rc == 0
   changed_when: false
+
+- name: Temporary setup Trivy for SBOM auto-generation (standalone binary file at /tmp/trivy)
+  ansible.builtin.shell:
+    cmd: |
+      set -o pipefail
+      curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | sh -s -- -b /tmp
+    creates: /tmp/trivy
+  args:
+    executable: /bin/bash
+
+- name: Auto-generate SBOM (SPDX file at /sbom.json)
+  ansible.builtin.command:
+    cmd: ./trivy rootfs --pkg-types os --format spdx-json --output /sbom.json --scanners vuln /
+    chdir: /tmp
+  changed_when: true
