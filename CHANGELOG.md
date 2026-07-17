@@ -3,6 +3,13 @@
 All notable changes to this project are documented in this file. See
 [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.0.1](https://github.com/ewcloud/ewc-ansible-role-eumetcast-terrestrial-amt/compare/1.0.0...1.0.1) (2026-07-17)
+
+
+### Bug Fixes
+
+* Run log cleanup as root to ensure deletion permissions ([#7](https://github.com/ewcloud/ewc-ansible-role-eumetcast-terrestrial-amt/issues/7)) ([307d431](https://github.com/ewcloud/ewc-ansible-role-eumetcast-terrestrial-amt/commit/307d43168d1ae74094951021cfc07cbfe2628835))
+
 # 1.0.0 (2026-04-17)
 
 
