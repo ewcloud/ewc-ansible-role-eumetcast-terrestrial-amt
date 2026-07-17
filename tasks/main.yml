@@ -234,7 +234,7 @@
   ansible.builtin.cron:
     name: "amt-log-cleanup"
     minute: "*/5"
-    user: "{{ linux_username }}"
+    user: root
     job: "find /var/log/amt/ -mtime +7 -type f -delete"
     state: present
 
@@ -242,7 +242,7 @@
   ansible.builtin.cron:
     name: "eumetcast-data-cleanup-{{ item }}"
     minute: "*/15"
-    user: "{{ linux_username }}"
+    user: root
     job: "find /home/{{ linux_username }}/data/eumetcast/{{ item }}/default -cmin +5 -type f -delete"
     state: present
   loop: "{{ services }}"
