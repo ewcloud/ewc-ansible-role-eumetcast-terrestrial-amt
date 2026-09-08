@@ -176,7 +176,7 @@
   ansible.builtin.lineinfile:
     path: "/etc/cast-client_{{ item }}.ini"
     regexp: "^log_level="
-    line: "log_level=normal"
+    line: "log_level=verbose"
     state: present
   loop: "{{ services }}"
   no_log: true
