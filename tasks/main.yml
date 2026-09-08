@@ -111,6 +111,22 @@
     - Reload systemd daemon
     - Restart tellicast-client
 
+- name: Deploy Tellicast client config for TER-4 and TER-5 relays, missing in Tellicast Client 2.14/AMT 2.0
+  ansible.builtin.template:
+    src: "{{ item }}.j2"
+    dest: "/etc/{{ item }}"
+    owner: root
+    group: root
+    mode: '0755'
+  loop:
+    - cast-client_ter-4.ini
+    - cast-client-channels_ter-4.ini
+    - cast-client_ter-5.ini
+    - cast-client-channels_ter-5.ini
+  notify:
+    - Reload systemd daemon
+    - Restart tellicast-client
+
 - name: Configure Tellicast username
   ansible.builtin.lineinfile:
     path: "/etc/cast-client_{{ item }}.ini"
