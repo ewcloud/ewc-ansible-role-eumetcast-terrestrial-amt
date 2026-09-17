@@ -3,6 +3,13 @@
 All notable changes to this project are documented in this file. See
 [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.1.0](https://github.com/ewcloud/ewc-ansible-role-eumetcast-terrestrial-amt/compare/1.0.2...1.1.0) (2026-09-17)
+
+
+### Features
+
+* Configure TER-4 and TER-5 relays by default ([#10](https://github.com/ewcloud/ewc-ansible-role-eumetcast-terrestrial-amt/issues/10)) ([049a56c](https://github.com/ewcloud/ewc-ansible-role-eumetcast-terrestrial-amt/commit/049a56c9e39acc5b7e4d0d8bc15825de69fb5433))
+
 ## [1.0.2](https://github.com/ewcloud/ewc-ansible-role-eumetcast-terrestrial-amt/compare/1.0.1...1.0.2) (2026-07-17)
 
 
