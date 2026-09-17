@@ -117,7 +117,7 @@
     dest: "/etc/{{ item }}"
     owner: root
     group: root
-    mode: '0755'
+    mode: '0666'
   loop:
     - cast-client_ter-4.ini
     - cast-client-channels_ter-4.ini
