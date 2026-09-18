@@ -11,8 +11,8 @@ version=2.14
 
 [recipient]
 
-user_name=
-user_key=
+user_name={{ tellicast_license_user_name }}
+user_key={{ tellicast_license_user_key }}
 
 [shell]
 login=none
@@ -46,7 +46,7 @@ delay_channel_leave_time=10800
 
 [parameters]
 source_address=193.17.9.11
-interface_address=0.0.0.0
+interface_address={{ tellicast_interface_address }}
 total_bandwidth=4000000000
 file_delivery_counter=0
 file_delivery_speed=0

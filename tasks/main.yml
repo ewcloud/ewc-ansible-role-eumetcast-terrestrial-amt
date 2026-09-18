@@ -55,6 +55,7 @@
   ansible.builtin.apt:
     update_cache: true
     cache_valid_time: 3600
+  when: not ansible_check_mode
 
 - name: Gather package facts
   ansible.builtin.package_facts:
@@ -143,7 +144,7 @@
     regexp: "^user_key="
     line: "user_key={{ tellicast_license_user_key }}"
     state: present
-  loop: "{{ services }}"
+  loop: "{{ services | difference(['ter-4', 'ter-5']) }}"
   no_log: true
   notify: Restart tellicast-client
 
@@ -153,7 +154,7 @@
     regexp: "^interface_address="
     line: "interface_address={{ tellicast_interface_address }}"
     state: present
-  loop: "{{ services }}"
+  loop: "{{ services | difference(['ter-4', 'ter-5']) }}"
   notify: Restart tellicast-client
 
 - name: Configure Tellicast client user
@@ -310,9 +311,11 @@
     creates: /tmp/trivy
   args:
     executable: /bin/bash
+  when:  not ansible_check_mode
 
 - name: Auto-generate SBOM (SPDX file at /sbom.json)
   ansible.builtin.command:
     cmd: ./trivy rootfs --pkg-types os --format spdx-json --output /sbom.json --scanners vuln /
     chdir: /tmp
   changed_when: true
+  when:  not ansible_check_mode
