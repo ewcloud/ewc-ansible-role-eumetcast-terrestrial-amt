@@ -291,8 +291,13 @@
   ansible.builtin.shell:
     cmd: |
       set -o pipefail
-      success_log_msg=$(grep "Receiver active" /var/log/tellicast-client/recv_ter-*.log | sort | tail -n 1 );
-      if [ -z "$success_log_msg" ]; then
+      setup_probe=$(grep "Receiver active" /var/log/tellicast-client/recv_ter-*.log | sort | tail -n 1 );
+      if [ -z "$setup_probe" ]; then
+        exit 1
+      fi
+
+      reception_probe=$(grep "Connected to announcement channel" /var/log/tellicast-client/recv_ter-*.log | sort | tail -n 1 );
+      if [ -z "$reception_probe" ]; then
         exit 1
       fi
   args:
