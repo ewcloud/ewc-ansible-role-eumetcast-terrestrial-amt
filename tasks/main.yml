@@ -95,6 +95,14 @@
     state: present
   when: "'amtgwd' not in ansible_facts.packages"
 
+- name: Create dedicated directory with proper permissions for Tellicast client logs
+  ansible.builtin.file:
+    path: "/var/log/tellicast-client"
+    state: directory
+    owner: "{{ linux_username }}"
+    group: "{{ linux_username }}"
+    mode: '0755'
+
 - name: Install Tellicast client package
   ansible.builtin.apt:
     deb: "/home/{{ linux_username }}/eumter-amt/packages/{{ tellicast_deb }}"
