@@ -55,6 +55,7 @@
   ansible.builtin.apt:
     update_cache: true
     cache_valid_time: 3600
+  when: not ansible_check_mode
 
 - name: Gather package facts
   ansible.builtin.package_facts:
@@ -93,6 +94,14 @@
     deb: "/home/{{ linux_username }}/eumter-amt/packages/{{ amtgwd_deb }}"
     state: present
   when: "'amtgwd' not in ansible_facts.packages"
+
+- name: Create dedicated directory with proper permissions for Tellicast client logs
+  ansible.builtin.file:
+    path: "/var/log/tellicast-client"
+    state: directory
+    owner: "{{ linux_username }}"
+    group: "{{ linux_username }}"
+    mode: '0755'
 
 - name: Install Tellicast client package
   ansible.builtin.apt:
@@ -143,7 +152,7 @@
     regexp: "^user_key="
     line: "user_key={{ tellicast_license_user_key }}"
     state: present
-  loop: "{{ services }}"
+  loop: "{{ services | difference(['ter-4', 'ter-5']) }}"
   no_log: true
   notify: Restart tellicast-client
 
@@ -153,7 +162,7 @@
     regexp: "^interface_address="
     line: "interface_address={{ tellicast_interface_address }}"
     state: present
-  loop: "{{ services }}"
+  loop: "{{ services | difference(['ter-4', 'ter-5']) }}"
   notify: Restart tellicast-client
 
 - name: Configure Tellicast client user
@@ -286,12 +295,30 @@
       - "amt: {{ ansible_facts.packages['amt'][0].version }}"
       - "tellicast-client: {{ ansible_facts.packages['tellicast-client'][0].version }}"
 
+- name: Copy utility script to calculate reception metrics
+  ansible.builtin.copy:
+    src: files/check_reception.sh
+    dest: /home/{{ linux_username }}/check_reception.sh
+    owner: "{{ linux_username }}"
+    group: "{{ linux_username }}"
+    mode: '0775'
+
 - name: Probe for readiness
   ansible.builtin.shell:
     cmd: |
       set -o pipefail
-      success_log_msg=$(grep "Receiver active" /var/log/tellicast-client/recv_ter-*.log | sort | tail -n 1 );
-      if [ -z "$success_log_msg" ]; then
+      setup_probe=$(grep "Receiver active" /var/log/tellicast-client/recv_ter-*.log | sort | tail -n 1 );
+      if [ -z "$setup_probe" ]; then
+        exit 1
+      fi
+
+      connection_probe=$(grep "Connected to announcement channel" /var/log/tellicast-client/recv_ter-*.log | sort | tail -n 1 );
+      if [ -z "$connection_probe" ]; then
+        exit 1
+      fi
+
+      reception_probe=$(/home/{{ linux_username }}/check_reception.sh | awk 'NR > 1 && $4 + 0 > 0 { found = 1 } END { print (found ? "Hit ratio higher than zero on service(s)" : "") }');
+      if [ -z "$reception_probe" ]; then
         exit 1
       fi
   args:
@@ -310,9 +337,11 @@
     creates: /tmp/trivy
   args:
     executable: /bin/bash
+  when: not ansible_check_mode
 
 - name: Auto-generate SBOM (SPDX file at /sbom.json)
   ansible.builtin.command:
     cmd: ./trivy rootfs --pkg-types os --format spdx-json --output /sbom.json --scanners vuln /
     chdir: /tmp
   changed_when: true
+  when: not ansible_check_mode
