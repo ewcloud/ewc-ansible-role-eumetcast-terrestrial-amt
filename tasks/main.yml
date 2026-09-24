@@ -295,6 +295,14 @@
       - "amt: {{ ansible_facts.packages['amt'][0].version }}"
       - "tellicast-client: {{ ansible_facts.packages['tellicast-client'][0].version }}"
 
+- name: Copy utility script to calculate reception metrics
+  ansible.builtin.copy:
+    src: files/check_reception.sh
+    dest: /home/{{ linux_username }}/check_reception.sh
+    owner: "{{ linux_username }}"
+    group: "{{ linux_username }}"
+    mode: '0775'
+
 - name: Probe for readiness
   ansible.builtin.shell:
     cmd: |
@@ -304,7 +312,12 @@
         exit 1
       fi
 
-      reception_probe=$(grep "Connected to announcement channel" /var/log/tellicast-client/recv_ter-*.log | sort | tail -n 1 );
+      connection_probe=$(grep "Connected to announcement channel" /var/log/tellicast-client/recv_ter-*.log | sort | tail -n 1 );
+      if [ -z "$connection_probe" ]; then
+        exit 1
+      fi
+
+      reception_probe=$(/home/{{ linux_username }}/check_reception.sh | awk 'NR > 1 && $4 + 0 > 0 { found = 1 } END { print (found ? "Hit ratio higher than zero on service(s)" : "") }');
       if [ -z "$reception_probe" ]; then
         exit 1
       fi
