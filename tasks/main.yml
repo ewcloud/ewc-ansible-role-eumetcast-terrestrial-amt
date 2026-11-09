@@ -4,6 +4,7 @@
     that:
       - tellicast_license_user_name is string and tellicast_license_user_name != '' and tellicast_license_user_name is defined
       - tellicast_license_user_key is string and tellicast_license_user_key != '' and tellicast_license_user_key is defined
+      - tellicast_data_cleanup_schedule is string and tellicast_data_cleanup_schedule is defined and tellicast_data_cleanup_schedule in ['quarter-hourly', 'hourly', 'daily', 'weekly', 'monthly', 'yearly', 'annually', 'reboot']
     fail_msg: "Input validation failed. See README.md for information on required inputs and their format."
     success_msg: "User input configuration is valid."
 
@@ -255,7 +256,7 @@
   changed_when: nat_rule_add.rc == 0
   notify: Save iptables
 
-- name: Configure AMT log cleanup cron job
+- name: Configure AMT log cleanup (every 5 minutes)
   ansible.builtin.cron:
     name: "amt-log-cleanup"
     minute: "*/5"
@@ -263,23 +264,29 @@
     job: "find /var/log/amt/ -mtime +7 -type f -delete"
     state: present
 
-- name: Configure service data cleanup cron jobs
+- name: Configure TelliCast service data cleanup ({{ tellicast_data_cleanup_schedule }})
   ansible.builtin.cron:
     name: "eumetcast-data-cleanup-{{ item }}"
-    minute: "*/15"
     user: root
     job: "find /home/{{ linux_username }}/data/eumetcast/{{ item }}/default -cmin +5 -type f -delete"
     state: present
+    special_time: "{{ tellicast_data_cleanup_schedule if tellicast_data_cleanup_schedule != 'quarter-hourly' else omit }}"
+    minute: "{{ '*/15' if tellicast_data_cleanup_schedule == 'quarter-hourly' else omit }}"
   loop: "{{ services }}"
+  loop_control:
+    label: "{{ item }}"
 
-- name: Configure temporary data cleanup cron jobs
+- name: Configure TelliCast temporal data cleanup ({{ tellicast_data_cleanup_schedule }})
   ansible.builtin.cron:
     name: "eumetcast-temp-cleanup-{{ item }}"
-    minute: "*/15"
     user: root
     job: "find /home/{{ linux_username }}/data/tmp/{{ item }} -cmin +5 -type f -delete"
     state: present
+    special_time: "{{ tellicast_data_cleanup_schedule if tellicast_data_cleanup_schedule != 'quarter-hourly' else omit }}"
+    minute: "{{ '*/15' if tellicast_data_cleanup_schedule == 'quarter-hourly' else omit }}"
   loop: "{{ services }}"
+  loop_control:
+    label: "{{ item }}"
 
 - name: Gather package facts
   ansible.builtin.package_facts:
