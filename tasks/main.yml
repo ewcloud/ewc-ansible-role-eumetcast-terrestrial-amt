@@ -324,8 +324,8 @@
   args:
     executable: /bin/bash
   register: readiness_probe
-  retries: 24
-  delay: 10
+  retries: 30
+  delay: 30
   until: readiness_probe.rc == 0
   changed_when: false
   failed_when: false
