@@ -3,6 +3,13 @@
 All notable changes to this project are documented in this file. See
 [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.2.0](https://github.com/ewcloud/ewc-ansible-role-eumetcast-terrestrial-amt/compare/1.1.1...1.2.0) (2026-11-09)
+
+
+### Features
+
+* Readiness probe measures reception based on lastest 24h logs ([#12](https://github.com/ewcloud/ewc-ansible-role-eumetcast-terrestrial-amt/issues/12)) ([ed24299](https://github.com/ewcloud/ewc-ansible-role-eumetcast-terrestrial-amt/commit/ed2429990671ee06816c1e8dfe19c083e2f5cb88))
+
 ## [1.1.1](https://github.com/ewcloud/ewc-ansible-role-eumetcast-terrestrial-amt/compare/1.1.0...1.1.1) (2026-09-24)
 
 
