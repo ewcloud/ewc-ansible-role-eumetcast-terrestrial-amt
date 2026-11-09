@@ -328,6 +328,13 @@
   delay: 10
   until: readiness_probe.rc == 0
   changed_when: false
+  failed_when: false
+
+- name: Exit gracefully upon readiness probe failure
+  ansible.builtin.assert:
+    that: readiness_probe.rc == 0
+    fail_msg: "Readiness probe failing! This may be due to temporal service degradation; wait a few minutes and re-try. If issues persist, verify your license (see details on data registration/licensing at https://user.eumetsat.int/resources/user-guides/data-registration-and-licensing)"
+    success_msg: "Readiness probe passing."
 
 - name: Temporary setup Trivy for SBOM auto-generation (standalone binary file at /tmp/trivy)
   ansible.builtin.shell:
