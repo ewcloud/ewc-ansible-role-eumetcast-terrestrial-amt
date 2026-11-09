@@ -3,6 +3,13 @@
 All notable changes to this project are documented in this file. See
 [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.3.0](https://github.com/ewcloud/ewc-ansible-role-eumetcast-terrestrial-amt/compare/1.2.0...1.3.0) (2026-11-09)
+
+
+### Features
+
+* Enable user-defined data cleanup schedule ([#13](https://github.com/ewcloud/ewc-ansible-role-eumetcast-terrestrial-amt/issues/13)) ([b63fa2d](https://github.com/ewcloud/ewc-ansible-role-eumetcast-terrestrial-amt/commit/b63fa2d5bde0b886022dcbaf93736f5d51959281))
+
 # [1.2.0](https://github.com/ewcloud/ewc-ansible-role-eumetcast-terrestrial-amt/compare/1.1.1...1.2.0) (2026-11-09)
 
 
