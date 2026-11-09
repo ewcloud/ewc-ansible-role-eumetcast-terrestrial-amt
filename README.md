@@ -96,10 +96,11 @@ ansible-playbook -i inventory.yml playbook.yml
 
 ## Inputs
 
-| Name                        | Description                                          | Type     | Default           | Required |
-| --------------------------- | ---------------------------------------------------- | -------- | ----------------- | :------: |
-| tellicast_license_user_name | Tellicast license user identifier                    | `string` | n/a               |    yes   |
-| tellicast_license_user_key  | Tellicast license activation key                     | `string` | n/a               |    yes   |
+| Name                            | Description                                          | Type     | Default           | Required |
+| ---------------------------     | ---------------------------------------------------- | -------- | ----------------- | :------: |
+| tellicast_license_user_name     | Tellicast license user identifier                    | `string` | n/a               |    yes   |
+| tellicast_license_user_key      | Tellicast license activation key                     | `string` | n/a               |    yes   |
+| tellicast_data_cleanup_schedule | Tellicast data cleanup schedule. Guards against "out of disk space" crashes. Select one of: `quarter-hourly` (recommended), `hourly`, `daily`, `weekly`, `monthly`, `yearly`, `annually`, `reboot` | `string` | n/a               |    yes   |
 
 ## Dependencies
 
