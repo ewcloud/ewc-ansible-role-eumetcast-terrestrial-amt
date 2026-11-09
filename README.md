@@ -10,9 +10,9 @@ The template is designed to:
 * Configure pre-existing virtual machines running Ubuntu 22, with a minimum recommended 64GB of RAM and 1TB+ of storage, such that they:
 
   * Install and configure the [EUMETCast Terrestrial](https://user.eumetsat.int/data-access/eumetcast-terrestrial) client over [Automatic Multicast Tunnelling (AMT)](https://gitlab.eumetsat.int/open-source/amt)
-  * Deploy the Tellicast terrestrial receiver runtime
+  * Deploy the TelliCast terrestrial receiver runtime
   * Configure network translation required for multicast reception over AMT
-  * Create maintenance jobs for log and data retention
+  * Create maintenance jobs for log and data cleanup
 
 EUMETCast Terrestrial over AMT can serve any network, regardless of native multicast connectivity, but provided `UDP` traffic is allowed on port `2268`. The encapsulated data can travel via GEANT network or the commercial internet.
 
@@ -98,9 +98,9 @@ ansible-playbook -i inventory.yml playbook.yml
 
 | Name                            | Description                                          | Type     | Default           | Required |
 | ---------------------------     | ---------------------------------------------------- | -------- | ----------------- | :------: |
-| tellicast_license_user_name     | Tellicast license user identifier                    | `string` | n/a               |    yes   |
-| tellicast_license_user_key      | Tellicast license activation key                     | `string` | n/a               |    yes   |
-| tellicast_data_cleanup_schedule | Tellicast data cleanup schedule. Guards against "out of disk space" crashes. Select one of: `quarter-hourly` (recommended), `hourly`, `daily`, `weekly`, `monthly`, `yearly`, `annually`, `reboot` | `string` | n/a               |    yes   |
+| tellicast_license_user_name     | TelliCast license user identifier                    | `string` | n/a               |    yes   |
+| tellicast_license_user_key      | TelliCast license activation key                     | `string` | n/a               |    yes   |
+| tellicast_data_cleanup_schedule | TelliCast data cleanup schedule. Guards against "out of disk space" crashes. Available options are: `quarter-hourly` (recommended), `hourly`, `daily`, `weekly`, `monthly`, `yearly`, `annually` or `reboot`. | `string` | n/a               |    yes   |
 
 ## Dependencies
 
@@ -115,7 +115,7 @@ Third-party components used in the resulting environment.
 | libstdc++6:i386              | https://packages.debian.org/sid/i386/libstdc++6/download  |
 | netfilter-persistent         | https://packages.debian.org/bullseye/netfilter-persistent  |
 | amt                          | https://gitlab.eumetsat.int/open-source/amt |
-| Tellicast terrestrial client | https://sftp.eumetsat.int/public/folder/uscvknvooksycdgpmimjnq/User-Materials/EUMETCast_Support/EUMETCast_Licence_cd/Linux/Tellicast/ | 
+| Tellicast terrestrial client | https://sftp.eumetsat.int/public/folder/uscvknvooksycdgpmimjnq/User-Materials/EUMETCast_Support/EUMETCast_Licence_cd/Linux/TelliCast/ | 
 
 
 
