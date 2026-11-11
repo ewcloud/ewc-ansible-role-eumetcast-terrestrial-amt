@@ -12,11 +12,11 @@ The template is designed to:
   * Install and configure the [EUMETCast Terrestrial](https://user.eumetsat.int/data-access/eumetcast-terrestrial) client over [Automatic Multicast Tunnelling (AMT)](https://gitlab.eumetsat.int/open-source/amt)
   * Deploy the TelliCast terrestrial receiver runtime
   * Configure network translation required for multicast reception over AMT
-  * Create maintenance jobs for log and data cleanup
+  * Automatically guards against "out of disk" crashes, by removing old data (15+ minutes of age), at regular user-defined intervals
+
+>✅ The data stream is saved to disk under the `/home/eumetuser/data` subdirectory.
 
 EUMETCast Terrestrial over AMT can serve any network, regardless of native multicast connectivity, but provided `UDP` traffic is allowed on port `2268`. The encapsulated data can travel via GEANT network or the commercial internet.
-
-The downloaded data stream is kept in your target host's disk, under the `/home/eumetuser/data` subdirectory.
 
 
 ## Copyright and License

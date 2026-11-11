@@ -268,7 +268,7 @@
   ansible.builtin.cron:
     name: "eumetcast-data-cleanup-{{ item }}"
     user: root
-    job: "find /home/{{ linux_username }}/data/eumetcast/{{ item }}/default -cmin +5 -type f -delete"
+    job: "find /home/{{ linux_username }}/data/eumetcast/{{ item }}/default -cmin +15 -type f -delete"
     state: present
     special_time: "{{ tellicast_data_cleanup_schedule if tellicast_data_cleanup_schedule != 'quarter-hourly' else omit }}"
     minute: "{{ '*/15' if tellicast_data_cleanup_schedule == 'quarter-hourly' else omit }}"
@@ -280,7 +280,7 @@
   ansible.builtin.cron:
     name: "eumetcast-temp-cleanup-{{ item }}"
     user: root
-    job: "find /home/{{ linux_username }}/data/tmp/{{ item }} -cmin +5 -type f -delete"
+    job: "find /home/{{ linux_username }}/data/tmp/{{ item }} -cmin +15 -type f -delete"
     state: present
     special_time: "{{ tellicast_data_cleanup_schedule if tellicast_data_cleanup_schedule != 'quarter-hourly' else omit }}"
     minute: "{{ '*/15' if tellicast_data_cleanup_schedule == 'quarter-hourly' else omit }}"
