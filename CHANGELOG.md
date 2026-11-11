@@ -3,6 +3,13 @@
 All notable changes to this project are documented in this file. See
 [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.4.0](https://github.com/ewcloud/ewc-ansible-role-eumetcast-terrestrial-amt/compare/1.3.0...1.4.0) (2026-11-11)
+
+
+### Features
+
+* Extend minimal data retention policy ([#14](https://github.com/ewcloud/ewc-ansible-role-eumetcast-terrestrial-amt/issues/14)) ([7200013](https://github.com/ewcloud/ewc-ansible-role-eumetcast-terrestrial-amt/commit/720001374a33c6b56ed1650bb8e7807674dcc5c7))
+
 # [1.3.0](https://github.com/ewcloud/ewc-ansible-role-eumetcast-terrestrial-amt/compare/1.2.0...1.3.0) (2026-11-09)
 
 
