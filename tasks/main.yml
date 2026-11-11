@@ -192,6 +192,16 @@
   no_log: true
   notify: Restart tellicast-client
 
+- name: Configure Tellicast logging to disable log buffering (required for readiness probe)
+  ansible.builtin.lineinfile:
+    path: "/etc/cast-client_{{ item }}.ini"
+    regexp: "^log_file=>>?.*"
+    line: "log_file=/var/log/tellicast-client/recv_{{ item }}.log"
+    state: present
+  loop: "{{ services }}"
+  no_log: true
+  notify: Restart tellicast-client
+
 - name: Ensure tunnel service is enabled
   ansible.builtin.systemd:
     name: tunnel.service
@@ -268,7 +278,7 @@
   ansible.builtin.cron:
     name: "eumetcast-data-cleanup-{{ item }}"
     user: root
-    job: "find /home/{{ linux_username }}/data/eumetcast/{{ item }}/default -cmin +5 -type f -delete"
+    job: "find /home/{{ linux_username }}/data/eumetcast/{{ item }}/default -cmin +15 -type f -delete"
     state: present
     special_time: "{{ tellicast_data_cleanup_schedule if tellicast_data_cleanup_schedule != 'quarter-hourly' else omit }}"
     minute: "{{ '*/15' if tellicast_data_cleanup_schedule == 'quarter-hourly' else omit }}"
@@ -280,7 +290,7 @@
   ansible.builtin.cron:
     name: "eumetcast-temp-cleanup-{{ item }}"
     user: root
-    job: "find /home/{{ linux_username }}/data/tmp/{{ item }} -cmin +5 -type f -delete"
+    job: "find /home/{{ linux_username }}/data/tmp/{{ item }} -cmin +15 -type f -delete"
     state: present
     special_time: "{{ tellicast_data_cleanup_schedule if tellicast_data_cleanup_schedule != 'quarter-hourly' else omit }}"
     minute: "{{ '*/15' if tellicast_data_cleanup_schedule == 'quarter-hourly' else omit }}"
