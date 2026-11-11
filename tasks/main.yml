@@ -192,6 +192,16 @@
   no_log: true
   notify: Restart tellicast-client
 
+- name: Configure Tellicast logging to disable log buffering (required for readiness probe)
+  ansible.builtin.lineinfile:
+    path: "/etc/cast-client_{{ item }}.ini"
+    regexp: "^log_file=>>?.*"
+    line: "log_file=/var/log/tellicast-client/recv_{{ item }}.log"
+    state: present
+  loop: "{{ services }}"
+  no_log: true
+  notify: Restart tellicast-client
+
 - name: Ensure tunnel service is enabled
   ansible.builtin.systemd:
     name: tunnel.service
